@@ -53,3 +53,39 @@ namespace SchoolDBProject
             Console.WriteLine("\nPress Enter to return.");
             Console.ReadLine();
         }
+        private static void AddPersonnel()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            var personnel = new Personnel();
+
+            Console.Write("First Name: ");
+            personnel.PersonnelFirstName = Console.ReadLine();
+
+            Console.Write("Last Name: ");
+            personnel.PersonnelLastName = Console.ReadLine();
+
+            Console.Write("Email: ");
+            personnel.PersonnelEmail = Console.ReadLine();
+
+            Console.WriteLine("Select Role:");
+            var roles = context.Roles.ToList();
+            foreach (var r in roles)
+            {
+                Console.WriteLine($"{r.RoleId}. {r.RoleName}");
+            }
+
+            Console.Write("Enter Role ID: ");
+            if (int.TryParse(Console.ReadLine(), out int roleId) && roles.Any(r => r.RoleId == roleId))
+            {
+                personnel.RoleId = roleId;
+                context.Personnel.Add(personnel);
+                context.SaveChanges();
+                Console.WriteLine("Personnel added successfully. Press Enter to return.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid Role. Operation cancelled.");
+            }
+            Console.ReadLine();
+        }
