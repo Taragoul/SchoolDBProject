@@ -89,3 +89,41 @@ namespace SchoolDBProject
             }
             Console.ReadLine();
         }
+        private static void CountTeachersByDepartment()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            Console.WriteLine("=== Select Department ===");
+            var departments = context.Departments.ToList();
+
+            foreach (var dept in departments)
+            {
+                Console.WriteLine($"{dept.DepartmentId}. {dept.DepartmentName}");
+            }
+
+            Console.Write("\nEnter Department ID: ");
+            if (int.TryParse(Console.ReadLine(), out int deptId))
+            {
+                var teachers = context.Personnel
+                    .Include(p => p.Departments)
+                    .Where(p => p.Departments.Any(d => d.DepartmentId == deptId))
+                    .Select(t => new
+                    {
+                        t.PersonnelFirstName,
+                        t.PersonnelLastName,
+                        t.PersonnelEmail
+                    })
+                    .ToList();
+
+                Console.Clear();
+                Console.WriteLine($"Total Teachers: {teachers.Count}");
+
+                foreach (var teacher in teachers)
+                {
+                    Console.WriteLine($"{teacher.PersonnelFirstName} {teacher.PersonnelLastName} - {teacher.PersonnelEmail}");
+                }
+            }
+            Console.ReadLine();
+        }
+    }
+}
