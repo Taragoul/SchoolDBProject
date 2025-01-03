@@ -142,3 +142,30 @@ namespace SchoolDBProject
                 _ => -1  // Return -1 for invalid grades
             };
         }
+        private static void AddGrade()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            var grade = new Grade();
+
+            Console.Write("Student ID: ");
+            grade.StudentId = int.Parse(Console.ReadLine());
+
+            Console.Write("Class ID: ");
+            grade.ClassId = int.Parse(Console.ReadLine());
+
+            Console.Write("Grade (e.g A-F): ");
+            grade.Grade1 = Console.ReadLine();
+
+            Console.Write("Teacher ID: ");
+            grade.TeacherId = int.Parse(Console.ReadLine());
+
+            grade.GradeDate = DateTime.Now;
+
+            context.Grades.Add(grade);
+            context.SaveChanges();
+            Console.WriteLine("Grade added successfully. Press Enter to return.");
+            Console.ReadLine();
+        }
+    }
+}
