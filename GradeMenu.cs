@@ -130,3 +130,15 @@ namespace SchoolDBProject
             }
             Console.ReadLine();
         }
+        private static int MapGradeToValue(string grade)
+        {
+            return grade.ToUpper() switch
+            {
+                "A" => 4,
+                "B" => 3,
+                "C" => 2,
+                "D" => 1,
+                "F" => 0,
+                _ => -1  // Return -1 for invalid grades
+            };
+        }
