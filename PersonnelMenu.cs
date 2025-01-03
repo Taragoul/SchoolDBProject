@@ -101,7 +101,7 @@ namespace SchoolDBProject
                 Console.WriteLine($"{dept.DepartmentId}. {dept.DepartmentName}");
             }
 
-            Console.Write("\nEnter Department ID: ");
+            Console.Write("\nEnter Department Number: ");
             if (int.TryParse(Console.ReadLine(), out int deptId))
             {
                 var teachers = context.Personnel
