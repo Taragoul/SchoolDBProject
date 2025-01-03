@@ -69,3 +69,52 @@ namespace SchoolDBProject
             Console.WriteLine("\nPress Enter to return.");
             Console.ReadLine();
         }
+        private static void AddStudent()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            var student = new Student();
+
+            Console.Write("First Name: ");
+            student.StudentFirstName = Console.ReadLine();
+
+            Console.Write("Last Name: ");
+            student.StudentLastName = Console.ReadLine();
+
+            Console.Write("Email: ");
+            student.StudentEmail = Console.ReadLine();
+
+            context.Students.Add(student);
+            context.SaveChanges();
+            Console.WriteLine("Student added successfully. Press Enter to return.");
+            Console.ReadLine();
+        }
+
+        private static void ListStudentsInClass()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            Console.WriteLine("=== Select Class ===");
+            var classes = context.Classes.ToList();
+
+            foreach (var c in classes)
+            {
+                Console.WriteLine($"{c.ClassId}. {c.ClassName}");
+            }
+
+            Console.Write("\nEnter Class ID: ");
+            if (int.TryParse(Console.ReadLine(), out int classId))
+            {
+                var students = context.Enrollments
+                    .Where(e => e.ClassId == classId)
+                    .Include(e => e.Student)
+                    .Select(e => e.Student)
+                    .ToList();
+
+                Console.Clear();
+                Console.WriteLine($"Students in Class {classId}:");
+                PrintStudents(students);
+            }
+        }
+    }
+}
