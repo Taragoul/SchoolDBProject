@@ -81,3 +81,52 @@ namespace SchoolDBProject
             Console.WriteLine("\nPress Enter to return.");
             Console.ReadLine();
         }
+        private static void GradeStatistics()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            Console.WriteLine("=== Select Class for Stats ===");
+            var classes = context.Classes.ToList();
+
+            foreach (var c in classes)
+            {
+                Console.WriteLine($"{c.ClassId}. {c.ClassName}");
+            }
+
+            Console.Write("\nEnter Class ID: ");
+            if (int.TryParse(Console.ReadLine(), out int classId))
+            {
+                var grades = context.Grades
+                    .Where(g => g.ClassId == classId)
+                    .Select(g => g.Grade1)
+                    .ToList();
+
+                if (grades.Count > 0)
+                {
+                    var gradeValues = grades
+                        .Select(g => MapGradeToValue(g))
+                        .Where(v => v >= 0)
+                        .ToList();
+
+                    if (gradeValues.Count > 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Class {classId} Statistics:");
+                        Console.WriteLine("\nGrade Mapping:");
+                        Console.WriteLine("A = 4, B = 3, C = 2, D = 1, F = 0\n");
+                        Console.WriteLine($"Highest Grade: {gradeValues.Max()}");
+                        Console.WriteLine($"Lowest Grade: {gradeValues.Min()}");
+                        Console.WriteLine($"Average Grade: {gradeValues.Average():F2}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No valid grades found for this class.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No grades found for this class.");
+                }
+            }
+            Console.ReadLine();
+        }
