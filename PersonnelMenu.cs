@@ -1,4 +1,5 @@
-﻿using SchoolDBProject.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolDBProject.Models;
 
 namespace SchoolDBProject
 {
@@ -36,4 +37,19 @@ namespace SchoolDBProject
                         break;
                 }
             }
+        }
+        private static void ListPersonnel()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            var personnel = context.Personnel.Include(p => p.Role).ToList();
+
+            Console.WriteLine("=== Personnel List ===");
+            foreach (var p in personnel)
+            {
+                Console.WriteLine($"{p.PersonnelFirstName} {p.PersonnelLastName} - {p.PersonnelEmail} - Role: {p.Role.RoleName}");
+            }
+
+            Console.WriteLine("\nPress Enter to return.");
+            Console.ReadLine();
         }
