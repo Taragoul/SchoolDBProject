@@ -16,7 +16,8 @@ namespace SchoolDBProject
                 Console.WriteLine("1. List All Students");
                 Console.WriteLine("2. Add New Student");
                 Console.WriteLine("3. Students in a specific Class");
-                Console.WriteLine("4. Back to Main Menu");
+                Console.WriteLine("4. List Active Classes");
+                Console.WriteLine("5. Back to Main Menu");
                 Console.Write("Select an option: ");
 
                 var choice = Console.ReadLine();
@@ -32,6 +33,9 @@ namespace SchoolDBProject
                         ListStudentsInClass();
                         break;
                     case "4":
+                        ListActiveClasses();
+                        break;
+                    case "5":
                         return;
                     default:
                         Console.WriteLine("Invalid option. Press Enter to try again.");
@@ -116,5 +120,38 @@ namespace SchoolDBProject
                 PrintStudents(students);
             }
         }
+        private static void ListActiveClasses()
+        {
+            using var context = new ProjectSchoolContext();
+            Console.Clear();
+            Console.WriteLine("=== Active Classes ===\n");
+
+            var activeClasses = context.Classes
+                .Where(c => c.Enrollments.Any())
+                .Select(c => new
+                {
+                    c.ClassName,
+                    c.Description,
+                    StudentCount = c.Enrollments.Count()
+                })
+                .ToList();
+
+            if (activeClasses.Count > 0)
+            {
+                foreach (var c in activeClasses)
+                {
+                    Console.WriteLine($"Class: {c.ClassName}");
+                    Console.WriteLine($"Description: {c.Description}");
+                    Console.WriteLine($"Enrolled Students: {c.StudentCount}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No active classes found.");
+            }
+            Console.WriteLine($"Press Enter to return.");
+            Console.ReadLine();
+        }
+
     }
 }
